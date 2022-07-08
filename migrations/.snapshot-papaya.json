@@ -126,6 +126,7 @@
             "id"
           ],
           "referencedTableName": "public.poll_question",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }

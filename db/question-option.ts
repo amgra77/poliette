@@ -5,7 +5,7 @@ import { PollQuestion } from "./questions.entity";
 @Entity()
 export class PollOption {
     @PrimaryKey()
-    id!: string;
+    id: string = nanoid();
 
     @Property()
     option!: string;
@@ -13,11 +13,6 @@ export class PollOption {
     @Property({ default: 0 })
     count: number = 0;
 
-    @ManyToOne('PollQuestion', 'pollOptions')
+    @ManyToOne('PollQuestion', { onDelete: 'cascade', eager: false })
     pollQuestion!: PollQuestion;
-
-    constructor(option: string) {
-        this.id = nanoid();
-        this.option = option;
-    }
 }

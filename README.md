@@ -42,3 +42,13 @@ https://github.com/jonahallibone/mikro-orm-nextjs
 https://github.com/romeerez/orms-overview
 
 
+## DB
+First Time
+```sql
+npx mikro-orm migration:create --initial
+```
+
+Apply migration
+```sql
+npx mikro-orm migration:up
+```
