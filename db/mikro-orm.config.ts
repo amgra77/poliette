@@ -13,6 +13,7 @@ const config: Options = {
     debug: true,
     migrations: {
         safe: true,
+        disableForeignKeys: false,
     }
 }
 
