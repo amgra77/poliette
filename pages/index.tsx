@@ -76,11 +76,11 @@ const Home: NextPage = () => {
                                     <p className="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">If you were invited to vote on an existing poll, just go to the URL you were provided and vote now.</p>
                                 </div>
                             </div>
-                            <div className="w-full py-5 bg-primary2 bg-opacity-10">
-                                <div className="flex flex-col items-center gap-3">
-                                    <input type="text" placeholder="Poll number" className="border border-primary/40 hover:border-primary/90  rounded p-1" onChange={e => setId(e.target.value)} />
-                                    <input type="text" placeholder="Poll password" className="border border-primary/40 hover:border-primary/90 rounded p-1" onChange={e => setPassword(e.target.value)} />
-                                    <button type="button" className="bg-primary3 py-3 px-6 rounded-lg text-white" onClick={goToPoll} disabled={!(id && password)}>Enter</button>
+                            <div className="w-full py-5 mt-8">
+                                <div className="flex flex-row justify-center gap-5">
+                                    <input type="text" placeholder="Poll number" className="border border-primary1/20 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" onChange={e => setId(e.target.value)} />
+                                    <input type="text" placeholder="Poll password" className="border border-primary1/20 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" onChange={e => setPassword(e.target.value)} />
+                                    <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg disabled:bg-primary1/50 disabled:cursor-not-allowed" onClick={goToPoll} disabled={!(id && password)}>Enter</button>
                                 </div>
                             </div>
                         </div>
