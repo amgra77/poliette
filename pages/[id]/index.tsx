@@ -52,10 +52,9 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    // Get country
     const questionId = context.params?.id;
     try {
-        const request = await fetch(`http://localhost:3000/api/questions/${questionId}`);
+        const request = await fetch(`https://poliette.vercel.app/api/questions/${questionId}`);
         if (request.status === 200) {
             const question: PollQuestion = await request.json();
             return {
