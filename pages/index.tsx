@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Link from 'react/link';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
     const router = useRouter();
