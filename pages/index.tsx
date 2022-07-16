@@ -17,13 +17,6 @@ const Home: NextPage = () => {
                 <meta name="description" content="Vote on a poll or create new poll" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <header>
-                <div className="p-5">
-                    <h1 className="text-2xl font-bold text-primary2">
-                        Polliette
-                    </h1>
-                </div>
-            </header>
 
             <main className="container md:p-0 mx-auto ">
                 <section className="px-2 py-32 bg-white md:px-0">
@@ -89,9 +82,7 @@ const Home: NextPage = () => {
 
             </main>
 
-            <footer>
-                Footer
-            </footer>
+           
         </section>
     )
 }
