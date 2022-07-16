@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import Link from 'react/link';
 
 const Home: NextPage = () => {
     const router = useRouter();
@@ -29,9 +30,9 @@ const Home: NextPage = () => {
                                     </h1>
                                     <p className="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">Use our app &apos;Polliette&apos; to create polls quickly and have results right away, you will see stats live.</p>
                                     <div className="relative flex flex-col sm:flex-row sm:space-x-4">
-                                        <a href="/new" className="flex items-center w-full px-6 py-3 mb-3 text-lg text-white bg-primary1 rounded-md sm:mb-0 hover:bg-opacity-90 sm:w-auto">
+                                        <Link href="/new" className="flex items-center w-full px-6 py-3 mb-3 text-lg text-white bg-primary1 rounded-md sm:mb-0 hover:bg-opacity-90 sm:w-auto">
                                             Create new poll
-                                        </a>
+                                        </Link>
                                         <a href="#existing-poll" className="flex items-center px-6 py-3 text-primary1 bg-gray-100 rounded-md hover:bg-gray-200 hover:text-gray-600">
                                             Vote on existing one
                                         </a>
