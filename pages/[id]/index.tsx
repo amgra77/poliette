@@ -153,7 +153,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const questionId = context.params?.id;
     try {
-        const request = await fetch(`${process.env.VERCEL_URL ?? 'http://localhost:3000'}/api/questions/${questionId}`);
+        const request = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL ? "https://"+(process.env.NEXT_PUBLIC_VERCEL_URL) : 'http://localhost:3000'}/api/questions/${questionId}`);
         if (request.status === 200) {
             const question: PollQuestion = await request.json();
             return {
