@@ -74,14 +74,14 @@ const Home: NextPage = () => {
                             <div className="w-full md:w-1/2 md:px-3">
                                 <div className="w-full pb-6 space-y-6 sm:max-w-md lg:max-w-lg md:space-y-4 lg:space-y-8 xl:space-y-9 sm:pr-5 lg:pr-0 md:pb-0">
                                     <h1 className="text-lg font-extrabold tracking-tight text-primary1 sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
-                                        <span className="block xl:inline">Do you have a poll number?</span>
+                                        <span className="block xl:inline">Do you have a poll code?</span>
                                     </h1>
-                                    <p className="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">If you were invited to vote on an existing poll, just go to the URL you were provided and vote now.</p>
+                                    <p className="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">If you were invited to vote on an existing poll, just enter de <span className='font-mono text-primary2'>code</span> below or go to the URL you were provided and vote now.</p>
                                 </div>
                             </div>
                             <div className="w-full py-5 mt-8">
                                 <div className="flex flex-col md:flex-row justify-center gap-5">
-                                    <input type="text" placeholder="Poll number" className="border border-primary1/20 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" onChange={e => setId(e.target.value)} ref={pollNumberRef} />
+                                    <input type="text" placeholder="Poll code" className="border border-primary1/20 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" onChange={e => setId(e.target.value)} ref={pollNumberRef} />
                                     <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg disabled:bg-primary1/50 disabled:cursor-not-allowed" onClick={goToPoll} disabled={!id}>Enter</button>
                                 </div>
                             </div>

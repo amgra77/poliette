@@ -12,9 +12,11 @@
     "@mikro-orm/core": "^5.2.1",
     "@mikro-orm/migrations": "^5.2.1",
     "@mikro-orm/postgresql": "^5.2.1",
+    "chart.js": "^3.8.0",
     "nanoid": "^3.3.4",
     "next": "^12.2.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13"
   },
