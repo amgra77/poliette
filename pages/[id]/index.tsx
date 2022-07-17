@@ -30,16 +30,18 @@ interface QuestionDetailsProps {
 }
 
 const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionDetailsProps) => {
-    if (!question) {
-        return <p>No question details available...</p>
-    }
-
+    const [showResults, setShowResults] = useState<boolean>(false);
     const [hasShareCapabilities, setHasShareCapabilities] = useState<boolean>(false);
+
     useEffect(() => {
         if ('share' in navigator) {
             setHasShareCapabilities(true);
         }
     }, []);
+
+    if (!question) {
+        return <p>No question details available...</p>
+    }
 
     const doShare = (): void => {
         if (hasShareCapabilities) {
@@ -50,7 +52,6 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
             });
         }
     }
-    const [showResults, setShowResults] = useState<boolean>(false);
 
     const availableColors = ['#0F4C5C','#E36414','#FB8B24','#9A031E','#5F0F40'];
 
