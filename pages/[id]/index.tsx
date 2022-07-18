@@ -11,7 +11,6 @@ import {
     Tooltip,
     Legend,
     ChartData,
-    DatasetChartOptions,
     ChartOptions,
 } from 'chart.js';
 import { Bar } from "react-chartjs-2";
@@ -25,15 +24,16 @@ ChartJS.register(
     Legend
 );
 
-// 6ruCTUbOPemCSkAMjKq_l
+// 317f
 interface QuestionDetailsProps {
     question: PollQuestion;
-    backedUrl: string;
+    backendUrl: string;
 }
 
-const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, backedUrl }: QuestionDetailsProps) => {
+const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, backendUrl }: QuestionDetailsProps) => {
     const [question, setQuestion] = useState<PollQuestion>(_question);
     const [showResults, setShowResults] = useState<boolean>(false);
+    const [votedAlready, setVotedAlready] = useState<boolean>(false);
     const [hasShareCapabilities, setHasShareCapabilities] = useState<boolean>(false);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
             navigator.share({
                 title: question.question,
                 text: 'Participate on a poll',
-                url: `${backedUrl}/${question.id}`,
+                url: `${backendUrl}/${question.id}`,
             });
         }
     }
@@ -114,7 +114,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
 
     const vote = async (optionId: string) => {
         try {
-            const voted = await fetch(`${backedUrl}/api/option/${optionId}/vote`, {
+            const voted = await fetch(`${backendUrl}/api/option/${optionId}/vote`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
@@ -133,6 +133,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                     return q;
                 });
                 setShowResults(true);
+                setVotedAlready(true);
             }
             else {
                 alert('There was a problem voting');
@@ -162,12 +163,14 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                             </div>
                         </>
                     }
-                    <div className="my-5">
-                        <div className="hover:underline hover:decoration-wavy" role="button" onClick={() => setShowResults(currentValue => !currentValue)}>
-                            {!showResults && <span>Show Results</span>}
-                            {showResults && <span>Hide Results</span>}
+                    {!votedAlready && 
+                        <div className="my-5">
+                            <div className="hover:underline hover:decoration-wavy" role="button" onClick={() => setShowResults(currentValue => !currentValue)}>
+                                {!showResults && <span>Show Results</span>}
+                                {showResults && <span>Hide Results</span>}
+                            </div>
                         </div>
-                    </div>
+                    }
                     {showResults &&
                         <div className="h-40">
                             <Bar data={data} options={options} />
@@ -186,15 +189,21 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const questionId = context.params?.id;
+    let backendUrl = "http://localhost:3000";
+    if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+        backendUrl = "https://poliette.vercel.app";
+    }
+    else if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+        backendUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+    }
     try {
-        const backedUrl = (process.env.NEXT_PUBLIC_VERCEL_URL) ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
-        const request = await fetch(`${backedUrl}/api/questions/${questionId}`);
+        const request = await fetch(`${backendUrl}/api/questions/${questionId}`);
         if (request.status === 200) {
             const question: PollQuestion = await request.json();
             return {
                 props: {
                     question: JSON.parse(JSON.stringify(question)),
-                    backedUrl,
+                    backendUrl: backendUrl,
                 },
             }
         }
