@@ -15,6 +15,7 @@ import {
     ChartOptions,
 } from 'chart.js';
 import { Bar } from "react-chartjs-2";
+import { PollOption } from "~db/question-option";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -27,9 +28,11 @@ ChartJS.register(
 // 6ruCTUbOPemCSkAMjKq_l
 interface QuestionDetailsProps {
     question: PollQuestion;
+    backedUrl: string;
 }
 
-const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionDetailsProps) => {
+const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, backedUrl }: QuestionDetailsProps) => {
+    const [question, setQuestion] = useState<PollQuestion>(_question);
     const [showResults, setShowResults] = useState<boolean>(false);
     const [hasShareCapabilities, setHasShareCapabilities] = useState<boolean>(false);
 
@@ -48,7 +51,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
             navigator.share({
                 title: question.question,
                 text: 'Participate on a poll',
-                url: `https://poliette.vercel.app/${question.id}`,
+                url: `${backedUrl}/${question.id}`,
             });
         }
     }
@@ -109,6 +112,37 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
         }
     };
 
+    const vote = async (optionId: string) => {
+        try {
+            const voted = await fetch(`${backedUrl}/api/option/${optionId}/vote`, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+            });
+            if (voted.status === 200) {
+                const newCounter = await voted.json() as PollOption;
+                setQuestion(q => {
+                    console.log(q);
+                    q.pollOptions.map(o => {
+                        if (o.id === optionId) {
+                            o.count = newCounter.count;
+                        }
+                        return o;
+                    });
+                    return q;
+                });
+                setShowResults(true);
+            }
+            else {
+                alert('There was a problem voting');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('There was a problem voting');
+        }
+    };
+
     return (
         <section className="h-screen">
             <div className="container mx-auto text-center h-full">
@@ -121,7 +155,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
                                     const shortcuts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                                     return (
                                         <div className="flex justify-center text-lg" key={`option-${option.id}`}>
-                                            <button className={` bg-primary${(index % 5) + 1} text-white px-5 py-2 shadow-lg`}>{shortcuts[index]}&nbsp; &mdash; &nbsp;{option.option}</button>
+                                            <button className={`bg-primary${(index % 5) + 1} text-white px-5 py-2 shadow-lg`} onClick={() => vote(option.id) }>{shortcuts[index]}&nbsp; &mdash; &nbsp;{option.option}</button>
                                         </div>
                                     );
                                 })}
@@ -153,12 +187,14 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question }: QuestionD
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const questionId = context.params?.id;
     try {
-        const request = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL ? "https://"+(process.env.NEXT_PUBLIC_VERCEL_URL) : 'http://localhost:3000'}/api/questions/${questionId}`);
+        const backedUrl = (process.env.NEXT_PUBLIC_VERCEL_URL) ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+        const request = await fetch(`${backedUrl}/api/questions/${questionId}`);
         if (request.status === 200) {
             const question: PollQuestion = await request.json();
             return {
                 props: {
-                    question: JSON.parse(JSON.stringify(question))
+                    question: JSON.parse(JSON.stringify(question)),
+                    backedUrl,
                 },
             }
         }
