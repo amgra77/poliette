@@ -4,6 +4,34 @@ import withORM from '~db/withORM';
 import getEM from '~db/getEM';
 import { ErrorMessage, PollQuestionCreate } from '~types';
 import { PollOption } from '~db/question-option';
+import { nanoid } from 'nanoid';
+
+const MAX_LENGTH:number = 4;
+const MAX_RETRY:number = 10;
+
+async function getUniqueId() {
+    const em = getEM();
+    let retry:number = 0;
+    let success:boolean | null = null;
+    let id:string;
+    let _found:PollQuestion | null = null;
+    do {
+        retry++;
+        id = nanoid(MAX_LENGTH);
+        try {
+            _found = await em.findOneOrFail(PollQuestion, { id });
+        } catch (error) {
+            success = true;
+        }
+    } while (!success && retry<MAX_RETRY);
+    if (success) {
+        return id;
+    }
+    else {
+        console.warn(`MAX_RETRY of ${MAX_RETRY} reached, dispatching next length of ${MAX_LENGTH+1}`);
+        return nanoid(MAX_LENGTH+1);
+    }
+}
 
 async function handler(req: NextApiRequest, res: NextApiResponse<PollQuestion | ErrorMessage>) {
     const em = getEM();
@@ -11,6 +39,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<PollQuestion | 
         try {
             const { question: questionContent, options: questionOptions } = req.body as PollQuestionCreate;
             const questionDTO = new PollQuestion();
+            questionDTO.id = await getUniqueId();
             questionDTO.question = questionContent;
 
             const questionRepository = em.getRepository(PollQuestion);
