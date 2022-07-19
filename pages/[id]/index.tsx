@@ -43,14 +43,14 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
         }
     }, []);
     
-    if (!question) {
-        return <p>No question details available...</p>
-    }
-
     const fetcher = (url:string) => fetch(url).then(res => res.json());
     useSWR((question && showResults) ? `/api/questions/${question.id}` : null, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
         setQuestion(refreshedQuestion);
     }});
+
+    if (!question) {
+        return <p>No question details available...</p>
+    }
 
     const doShare = (): void => {
         if (hasShareCapabilities) {
