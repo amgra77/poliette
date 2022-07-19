@@ -46,12 +46,11 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
     if (!question) {
         return <p>No question details available...</p>
     }
-    else {
-        const fetcher = (url:string) => { console.log('Loading...'); return fetch(url).then(res => res.json())};
-        useSWR(showResults && `/api/questions/${question.id}`, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
-            setQuestion(refreshedQuestion);
-        }});
-    }
+
+    const fetcher = (url:string) => fetch(url).then(res => res.json());
+    useSWR(question && showResults && `/api/questions/${question.id}`, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
+        setQuestion(refreshedQuestion);
+    }});
 
     const doShare = (): void => {
         if (hasShareCapabilities) {
