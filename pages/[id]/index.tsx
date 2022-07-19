@@ -48,7 +48,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
     }
 
     const fetcher = (url:string) => fetch(url).then(res => res.json());
-    useSWR(question && showResults && `/api/questions/${question.id}`, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
+    useSWR(showResults && `/api/questions/${question.id}`, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
         setQuestion(refreshedQuestion);
     }});
 
