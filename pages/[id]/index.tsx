@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import { Bar } from "react-chartjs-2";
 import { PollOption } from "~db/question-option";
+import useSWR from "swr";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -35,15 +36,21 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
     const [showResults, setShowResults] = useState<boolean>(false);
     const [votedAlready, setVotedAlready] = useState<boolean>(false);
     const [hasShareCapabilities, setHasShareCapabilities] = useState<boolean>(false);
-
+    
     useEffect(() => {
         if ('share' in navigator) {
             setHasShareCapabilities(true);
         }
     }, []);
-
+    
     if (!question) {
         return <p>No question details available...</p>
+    }
+    else {
+        const fetcher = (url:string) => { console.log('Loading...'); return fetch(url).then(res => res.json())};
+        useSWR(showResults && `/api/questions/${question.id}`, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
+            setQuestion(refreshedQuestion);
+        }});
     }
 
     const doShare = (): void => {
