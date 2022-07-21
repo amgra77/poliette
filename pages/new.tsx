@@ -17,7 +17,7 @@ const New: NextPage = () => {
                                     <div className="container mx-auto text-center h-full">
                                         <div className="flex flex-col h-full">
                                             <h1 className="p-3 text-4xl md:text-2xl font-bold mb-5"> Enter your question</h1>
-                                            <textarea rows={5} className="block w-6/12 m-auto px-4 py-3 mb-4 border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none" />
+                                            <textarea rows={5} className="block w-6/12 m-auto px-4 py-3 mb-4 border border-primary1/20 rounded-lg focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" />
                                             <h1 className='p-3 text-4xl md:text-2xl font-bold mb-5'>Add the Options</h1>
                                             <div className="my-3">
                                                 <input type="text" placeholder="Add option" className="border border-primary1/20 w-1/2 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" />
@@ -25,7 +25,7 @@ const New: NextPage = () => {
                                             </div>
 
                                             <div className="flex justify-center text-lg my-4">
-                                                <span className="bg-primary2 text-white px-5 py-2 shadow-lg">1&nbsp; &mdash; &nbsp;This is option 1</span>
+                                                <span className="bg-primary2 text-white px-5 py-2 shadow-lg">This is option 1</span>
                                                 <button type="button" className="bg-primary4 py-3 px-6 rounded-lg text-white shadow-lg ml-4 ">Delete</button>
                                             </div>
                                         </div>
