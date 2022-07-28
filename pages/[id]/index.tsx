@@ -57,7 +57,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
         };
     }, [question]);
     
-    const fetcher = (url:string) => fetch(url).then(res => res.json());
+    const fetcher = (url:string) => fetch(url).then(res => { if(res.status === 200) { return res.json();} else { return null; }});
     useSWR(id ? `/api/questions/${id}` : null, fetcher, { refreshInterval: 30_000, onSuccess: (refreshedQuestion:PollQuestion) => {
         setQuestion(refreshedQuestion);
     }});
@@ -65,9 +65,11 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
     if (!question) {
         return <div className="h-screen">
             <p className="text-center">
-                Fetching details...{id}
+                If question does not load after 30 second, the poll does not exist...{id}
             </p>
         </div>
+    } else {
+        console.log(question);
     }
 
     const doShare = (): void => {
@@ -84,7 +86,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
 
     const data:ChartData<"bar", number[], string> = {
         labels: ["Oprions"],
-        datasets: question.pollOptions.map((one, index) => {
+        datasets: question.pollOptions?.map((one, index) => {
             return {
                 label: one.option,
                 data: [one.count],
@@ -148,7 +150,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                 if (voted.status === 200) {
                     const newCounter = await voted.json() as PollOption;
                     setQuestion(q => {
-                        q.pollOptions.map(o => {
+                        q.pollOptions?.map(o => {
                             if (o.id === optionId) {
                                 o.count = newCounter.count;
                             }
@@ -179,7 +181,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                     {!showResults &&
                         <>
                             <div className="questions flex flex-col gap-5">
-                                {question.pollOptions.map((option, index) => {
+                                {question.pollOptions?.map((option, index) => {
                                     return (
                                         <div className="flex justify-center text-lg" key={`option-${option.id}`}>
                                             <button className={`bg-primary${(index % 5) + 1} text-white px-5 py-2 shadow-lg`} onClick={() => vote(option.id) }>{shortcuts[index]}&nbsp; &mdash; &nbsp;{option.option}</button>
@@ -215,7 +217,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const questionId = context.params?.id;
-    let backendUrl = "http://localhost:3000";
+    let backendUrl = "http://localhost:3001";
     if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
         backendUrl = "https://poliette.vercel.app";
     }

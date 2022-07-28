@@ -4,13 +4,14 @@ import { useState } from 'react'
 
 
 const New: NextPage = () => {
-    const [pollOptionsList, setpollOptionsList] = useState([]);
+    const [pollOptionsList, setpollOptionsList] = useState<string[]>([]);
     const router = useRouter();
 
     const createPoll = async () => {
-        if (document?.querySelector('#newPollQuestion')?.value.length > 2 && pollOptionsList.length > 1) {
+        const question = document?.querySelector('#newPollQuestion') as HTMLInputElement;
+        if (question?.value.length > 2 && pollOptionsList.length > 1) {
             const payload = {
-                question: document.querySelector('#newPollQuestion').value,
+                question: question.value,
                 options: pollOptionsList
             }
 
@@ -30,7 +31,7 @@ const New: NextPage = () => {
                     },
                     body: JSON.stringify(payload),
                 })
-                
+
                 if (createNewPoll.status === 200) {
                     const newPoll = await createNewPoll.json();
                     router.push(`/${newPoll?.id}`);
@@ -46,10 +47,11 @@ const New: NextPage = () => {
     };
 
     const addPollOption = () => {
-
-        if (document?.querySelector('#newPollOption') && document?.querySelector('#newPollOption').value !== "" ) {
-            setpollOptionsList([...pollOptionsList, document.querySelector('#newPollOption').value]);
-            document.querySelector('#newPollOption').value = null;
+        const option = document?.querySelector('#newPollOption') as HTMLInputElement;
+        if (option.value !== "") {
+            setpollOptionsList([...pollOptionsList, option.value]);
+            option.value = '';
+            option.focus();
         }
     };
 
