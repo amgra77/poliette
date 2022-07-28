@@ -1,7 +1,61 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router';
+import { useState } from 'react'
 
 
 const New: NextPage = () => {
+    const [pollOptionsList, setpollOptionsList] = useState([]);
+    const router = useRouter();
+
+    const createPoll = async () => {
+        if (document?.querySelector('#newPollQuestion')?.value.length > 2 && pollOptionsList.length > 1) {
+            const payload = {
+                question: document.querySelector('#newPollQuestion').value,
+                options: pollOptionsList
+            }
+
+            let backendUrl = "http://localhost:3001";
+            if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+                backendUrl = "https://poliette.vercel.app";
+            }
+            else if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+                backendUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+            }
+
+            try {
+                const createNewPoll = await fetch(`${backendUrl}/api/questions/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                })
+                
+                if (createNewPoll.status === 200) {
+                    const newPoll = await createNewPoll.json();
+                    router.push(`/${newPoll?.id}`);
+                } else {
+                    console.log('error');
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert('Oh no something went wrong. Please try again');
+            }
+        }
+    };
+
+    const addPollOption = () => {
+
+        if (document?.querySelector('#newPollOption') && document?.querySelector('#newPollOption').value !== "" ) {
+            setpollOptionsList([...pollOptionsList, document.querySelector('#newPollOption').value]);
+            document.querySelector('#newPollOption').value = null;
+        }
+    };
+
+    const removePollOption = (option: string, index: number) => {
+        console.log(option, index);
+    }
 
     return (
         <section>
@@ -17,19 +71,30 @@ const New: NextPage = () => {
                                     <div className="container mx-auto text-center h-full">
                                         <div className="flex flex-col h-full">
                                             <h1 className="p-3 text-4xl md:text-2xl font-bold mb-5"> Enter your question</h1>
-                                            <textarea rows={5} className="block w-6/12 m-auto px-4 py-3 mb-4 border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none" />
-                                            <h1 className='p-3 text-4xl md:text-2xl font-bold mb-5'>Add the Options</h1>
+                                            <textarea rows={5} className="block w-6/12 m-auto px-4 py-3 mb-4 border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none" id="newPollQuestion" name="newPollQuestion" />
+                                            <h1 className='p-3 text-4xl md:text-2xl font-bold mb-5'>Add the poll options</h1>
                                             <div className="my-3">
-                                                <input type="text" placeholder="Add option" className="border border-primary1/20 w-1/2 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" />
-                                                <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg ml-4 ">Add</button>
+                                                <input type="text" placeholder="Add option" className="border border-primary1/20 w-1/2 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" id="newPollOption" name="newPollOption" />
+                                                <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg ml-4 " onClick={addPollOption}>Add</button>
                                             </div>
 
-                                            <div className="flex justify-center text-lg my-4">
-                                                <span className="bg-primary2 text-white px-5 py-2 shadow-lg">1&nbsp; &mdash; &nbsp;This is option 1</span>
-                                                <button type="button" className="bg-primary4 py-3 px-6 rounded-lg text-white shadow-lg ml-4 ">Delete</button>
+                                            <div className="text-lg my-4">
+                                                {
+                                                    pollOptionsList.length > 0 && pollOptionsList.map((option, index) => {
+                                                        return (
+
+                                                            <div className='w-full' key={index}>
+                                                                <div className='flex justify-center mb-3'>
+                                                                    <span className="bg-primary2 text-white px-5 py-2 shadow-lg">{index + 1}&nbsp; &mdash; &nbsp;{option}</span>
+                                                                    <button type="button" className="bg-primary4 py-3 px-6 rounded-lg text-white shadow-lg ml-4" onClick={() => { removePollOption(option, index) }}>Delete</button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+
                                             </div>
                                         </div>
-                                        <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg ml-4 my-20">Create poll</button>
+                                        <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg ml-4 my-20" onClick={createPoll}>Create poll</button>
                                     </div>
                                 </div>
                             </div>
@@ -37,9 +102,6 @@ const New: NextPage = () => {
                         </div>
                     </div>
                 </section>
-
-
-
             </main>
 
         </section>

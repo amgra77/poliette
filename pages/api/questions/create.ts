@@ -34,6 +34,7 @@ async function getUniqueId() {
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse<PollQuestion | ErrorMessage>) {
+    console.log('creating new poll');
     const em = getEM();
     if (req.method === 'POST') {
         try {
