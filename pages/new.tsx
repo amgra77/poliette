@@ -14,6 +14,7 @@ const New: NextPage = () => {
                 question: question.value,
                 options: pollOptionsList
             }
+            console.log(payload);
 
             let backendUrl = "http://localhost:3001";
             if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
@@ -57,6 +58,11 @@ const New: NextPage = () => {
 
     const removePollOption = (option: string, index: number) => {
         console.log(option, index);
+        const temp = pollOptionsList.filter((val, i) => {
+            return i !== index;
+        })
+        setpollOptionsList([...temp]);
+
     }
 
     return (
@@ -76,8 +82,9 @@ const New: NextPage = () => {
                                             <textarea rows={5} className="block w-6/12 m-auto px-4 py-3 mb-4 border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none" id="newPollQuestion" name="newPollQuestion" />
                                             <h1 className='p-3 text-4xl md:text-2xl font-bold mb-5'>Add the poll options</h1>
                                             <div className="my-3">
-                                                <input type="text" placeholder="Add option" className="border border-primary1/20 w-1/2 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" id="newPollOption" name="newPollOption" />
+                                                <input type="text" onKeyDown={(e) => { if (e.code === 'Enter') { addPollOption() } }} placeholder="Add option" className="border border-primary1/20 w-1/2 p-4 rounded focus:outline-none focus-visible:ring focus-visible:ring-primary1 focus-within:shadow-lg" id="newPollOption" name="newPollOption" />
                                                 <button type="button" className="bg-primary1 py-3 px-6 rounded-lg text-white shadow-lg ml-4 " onClick={addPollOption}>Add</button>
+
                                             </div>
 
                                             <div className="text-lg my-4">
