@@ -1,9 +1,12 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router';
 import { useState } from 'react'
 
+interface NewPageProps {
+    backendUrl: string;
+}
 
-const New: NextPage = () => {
+const New: NextPage<NewPageProps> = ({backendUrl}:NewPageProps) => {
     const [pollOptionsList, setpollOptionsList] = useState<string[]>([]);
     const router = useRouter();
 
@@ -14,16 +17,6 @@ const New: NextPage = () => {
                 question: question.value,
                 options: pollOptionsList
             }
-            console.log(payload);
-
-            let backendUrl = "http://localhost:3001";
-            if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
-                backendUrl = "https://poliette.vercel.app";
-            }
-            else if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
-                backendUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
-            }
-
             try {
                 const createNewPoll = await fetch(`${backendUrl}/api/questions/create`, {
                     method: 'POST',
@@ -115,6 +108,21 @@ const New: NextPage = () => {
 
         </section>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    let backendUrl = "http://localhost:3001";
+    if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+        backendUrl = "https://poliette.vercel.app";
+    }
+    else if (process.env?.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+        backendUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+    }
+    return {
+        props: {
+            backendUrl: backendUrl,
+        },
+    }
 }
 
 export default New
