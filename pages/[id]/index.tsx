@@ -98,6 +98,7 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
 
     const options:ChartOptions<"bar"> = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
@@ -191,6 +192,11 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                             </div>
                         </>
                     }
+                    {hasShareCapabilities &&
+                        <div className="my-3">
+                            <button className="bg-primary1 hover:bg-primary1/90 text-white hover:font-bold px-5 py-3 shadow-lg rounded" onClick={doShare}>Share</button>
+                        </div>
+                    }
                     {!votedAlready && 
                         <div className="my-5">
                             <div className="hover:underline hover:decoration-wavy" role="button" onClick={() => setShowResults(currentValue => !currentValue)}>
@@ -199,16 +205,13 @@ const QuestionDetails: NextPage<QuestionDetailsProps> = ({ question: _question, 
                             </div>
                         </div>
                     }
+                    
                     {showResults &&
-                        <div className="h-40">
-                            <Bar data={data} options={options} />
+                        <div>
+                            <Bar data={data} width={150} height={450} options={options} />
                         </div>
                     }
-                    {hasShareCapabilities &&
-                        <div className="my-5">
-                            <button className="bg-primary1 hover:bg-primary1/90 text-white hover:font-bold px-5 py-3 shadow-lg rounded" onClick={doShare}>Share</button>
-                        </div>
-                    }
+                    
                 </div>
             </div>
         </section>
